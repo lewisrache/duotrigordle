@@ -190,6 +190,10 @@ button {
 .letter {
   position: absolute;
 }
+.cell.compressed {
+  aspect-ratio: 2/1;
+  font-size: calc(var(--app-width) / 50);
+}
 
 /* Keyboard */
 .keyboard {

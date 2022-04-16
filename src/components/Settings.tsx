@@ -12,11 +12,23 @@ export function Settings() {
     hideCompletedBoards,
     animateHiding,
     hideKeyboard,
+    compressedMode,
   } = useSelector((s) => s.settings);
 
   return (
     <div className={cn("popup-wrapper", !shown && "hidden")}>
       <div className="popup">
+        <div className="group">
+          <input
+            type="checkbox"
+            id="compressed-mode"
+            checked={compressedMode}
+            onChange={(e) =>
+              dispatch(updateSettings({ compressedMode: e.target.checked }))
+            }
+          />
+          <label htmlFor="compressed-mode">Compressed mode</label>
+        </div>
         <div className="group">
           <input
             type="checkbox"

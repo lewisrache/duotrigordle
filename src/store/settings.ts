@@ -7,6 +7,7 @@ export type SettingsState = {
   hideCompletedBoards: boolean;
   animateHiding: boolean;
   hideKeyboard: boolean;
+  compressedMode: boolean;
 };
 const initialState: SettingsState = {
   colorBlindMode: false,
@@ -15,6 +16,7 @@ const initialState: SettingsState = {
   hideCompletedBoards: false,
   animateHiding: true,
   hideKeyboard: false,
+  compressedMode: false,
 };
 
 const settingsSlice = createSlice({

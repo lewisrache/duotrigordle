@@ -29,6 +29,10 @@ function Board(props: BoardProps) {
     return idx === -1 ? null : idx;
   }, [guesses, target]);
 
+  const combinedGuesses = useMemo(() => {
+    return guesses;
+  }, [guesses, colors]);
+
   const boardWon = useMemo(
     () => guesses.indexOf(target) !== -1,
     [target, guesses]
@@ -38,6 +42,8 @@ function Board(props: BoardProps) {
 
   const input = useSelector((s) => s.game.input);
 
+  const settings = useSelector((s) => s.settings);
+
   return (
     <div className={cn("board", complete && "complete")}>
       {range(NUM_GUESSES).map((i) => {
@@ -46,6 +52,9 @@ function Board(props: BoardProps) {
         } else if (i === guesses.length) {
           const textRed = input.length === 5 && !WORDS_VALID.has(input);
           return <Word key={i} letters={input} textRed={textRed} />;
+        // Past guesses words determined via: i < guesses.length
+        } else if (settings.compressedMode) {
+          return <CompressedWord key={i} letters={guesses[i] ?? ""} colors={colors[i]} />;
         } else {
           return <Word key={i} letters={guesses[i] ?? ""} colors={colors[i]} />;
         }
@@ -59,6 +68,20 @@ type WordProps = {
   colors?: string;
   textRed?: boolean;
 };
+const CompressedWord = React.memo(function (props: WordProps) {
+  return (
+    <>
+      {range(5).map((i) => (
+        <CompressedCell
+          key={i}
+          letter={props.letters[i] ?? ""}
+          textRed={props.textRed}
+          color={props.colors ? (props.colors[i] as "B") : undefined}
+        />
+      ))}
+    </>
+  );
+});
 const Word = React.memo(function (props: WordProps) {
   return (
     <>
@@ -79,6 +102,16 @@ type CellProps = {
   textRed?: boolean;
   color?: "B" | "Y" | "G";
 };
+function CompressedCell(props: CellProps) {
+  const color =
+    props.color === "Y" ? "yellow" : props.color === "G" ? "green" : null;
+  const textRed = props.textRed ? "text-red" : "";
+  return (
+    <div className={cn("cell", color, textRed, "compressed")}>
+      <span className="letter">{props.letter}</span>
+    </div>
+  );
+}
 function Cell(props: CellProps) {
   const color =
     props.color === "Y" ? "yellow" : props.color === "G" ? "green" : null;
